@@ -1,5 +1,5 @@
 import pygame
-
+from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.utils.constants import BG, CLOUD, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ICON, LARGE_CACTUS
 from dino_runner.components.dinosaur import Dinosaur
 
@@ -16,9 +16,8 @@ class Game:
         self.y_pos_bg = 500
         self.posX_cloud = 2000
         self.PosY_cloud = 200
-        self.pos_x_cactus = 30
-        self.pos_y_cactus = 430
         self.player = Dinosaur()
+        self.obstacle_manager = ObstacleManager()
         
 
     def run(self):
@@ -38,6 +37,7 @@ class Game:
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
+        self.obstacle_manager.update(self)
     
     def cloud(self):
         imagen= CLOUD.get_width()
@@ -53,18 +53,12 @@ class Game:
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.cloud()
-        self.cactus()
+        self.obstacle_manager.draw(self.screen)
         self.player.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
         
-    def cactus(self):
-        images= LARGE_CACTUS[0].get_width()
-        self.screen.blit(LARGE_CACTUS[0], (images + self.pos_x_cactus, self.pos_y_cactus))
-        if self.pos_x_cactus <= -images:
-           self.screen.blit(LARGE_CACTUS[0], (images + self.pos_x_cactus, self.pos_y_cactus))
-           self.pos_x_cactus = 2500
-        self.pos_x_cactus -= self.game_speed
+    
 
     def draw_background(self):
         image_width = BG.get_width()
